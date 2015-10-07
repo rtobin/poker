@@ -13,7 +13,7 @@ class Hand
   end
 
   def remove_card(index)
-    @cards.delete_at(index)
+    @cards[index] = nil
   end
 
   def royal_flush?

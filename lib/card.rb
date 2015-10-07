@@ -1,3 +1,5 @@
+require 'colorize'
+
 class Card
   attr_reader :rank, :suit, :value
 
@@ -27,6 +29,18 @@ class Card
 
     def <=>(other_card)
       value <=> other_card.value
+    end
+
+    def to_s
+      suit_colors = {:spades => :black,
+                     :clubs => :black,
+                     :hearts => :red,
+                     :diamonds => :red }
+       suit_unicode = {:spades => '♠',
+                      :clubs => '♣',
+                      :hearts => '♥',
+                      :diamonds => '♦' }
+      "#{rank}#{suit_unicode[suit]}".colorize(:color => suit_colors[suit])
     end
 
 end

@@ -3,7 +3,7 @@ require_relative 'card'
 class Deck
 
   def self.default_deck
-    suits = [:heart, :spade, :club, :diamond]
+    suits = [:hearts, :spades, :clubs, :diamonds]
     ranks = (2..10).to_a.map(&:to_s) + %w[J Q K A]
 
     suits.each_with_object([]) do |suit, deck|

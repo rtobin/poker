@@ -1,8 +1,9 @@
-require "deck"
-require "player"
+require_relative "deck"
+require_relative "player"
 
 class Game
   attr_reader :deck, :players
+  attr_accessor :current_bet, :pot
 
   def initialize(*players)
     @deck = Deck.new
@@ -22,9 +23,8 @@ class Game
   def get_bets
     active_players.each do |player|
       bet = player.get_bet(current_bet)
-      current_bet == bet if bet > current_bet
-      pot += bet
-      #eliminate folded players
+      self.current_bet = bet if bet > current_bet
+      self.pot += bet
     end
   end
 
@@ -32,7 +32,7 @@ class Game
     players.each { |player| player.folded = false }
     deck.reset
     deck.shuffle
-    active_players.each { |player| deal_to(player) } #$unless player.folded }
+    active_players.each { |player| deal_to(player) }
     get_bets
     if players.count < 2
       give_pot(players.first)
@@ -43,7 +43,7 @@ class Game
       deal_to(player)
     end
     get_bets
-    winner = players.map { |player| player.hand }.sort.last
+    winner = players.sort_by { |player| player.hand }.last
     give_pot(winner)
     puts "#{winner.name} won!"
     players.rotate!
@@ -55,13 +55,26 @@ class Game
   end
 
   def play
-
-    play_round
+    loop do
+      play_round
+      puts "Play again? y/n"
+      break if gets.chomp.downcase == "n"
+    end
   end
 
   def deal_to(player)
-    while player.cards.count < 5
-      card = deck.draw
-      player.cards << card
+    while player.hand.cards.count < 5
+      card = deck.draw_card
+      player.hand.cards.unshift(card)
+    end
   end
+end
+
+
+if $PROGRAM_NAME == __FILE__
+  player1 = Player.new("Ryan", 100)
+  player2 = Player.new("Fred", 100)
+  game = Game.new(player1, player2)
+  system("clear")
+  game.play
 end
